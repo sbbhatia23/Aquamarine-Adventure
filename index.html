@@ -5,96 +5,70 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aquamarine Adventure</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-
-      /* Image background */
-      background-image: url("assets/submarine background.webp");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      color: white;
-    }
-
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.4);
-      z-index: 0;
-    }
-
-    .container {
-      position: relative;
-      text-align: center;
-      animation: fadeIn 1.5s ease;
-      z-index: 1;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      text-shadow: 0px 4px 10px rgba(0,0,0,0.6);
-    }
-
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      opacity: 0.85;
-      text-shadow: 0px 3px 8px rgba(0,0,0,0.6);
-    }
-
-    button {
-      background-color: rgba(255,255,255,0.1);
-      border: 2px solid white;
-      padding: 14px 40px;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: white;
-      letter-spacing: 2px;
-      transition: all 0.3s ease;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,255,255,0.2);
-      backdrop-filter: blur(4px);
-    }
-
-    button:hover {
-      background-color: rgba(255,255,255,0.8);
-      color: #001f3f;
-      box-shadow: 0 0 30px rgba(0,255,255,0.7);
-      transform: scale(1.08);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  
 </head>
 <body>
-  <div class="overlay"></div>
+  <div class="video-container">
+    <!-- Cover image -->
+    <img id="cover-image" src="assets/firstlevel.png" alt="Cover">
 
-  <div class="container">
-    <h1>🌊 Welcome to Aquamarine Adventure 🌊</h1>
-    <p>Click below to start your underwater journey!</p>
-    <button id="start-btn">Dive In</button>
+    <!-- Video -->
+    <video id="intro-video" src="assets/cover.mp4"></video>
+
+    <!-- Music -->
+    <audio id="bg-music" src="assets/bg.wav" loop></audio>
+
+    <!-- Controls -->
+    <div class="controls">
+      <!-- Play / Pause -->
+      <img id="play-btn" class="control-button" src="assets/icons/play.png" alt="Play">
+      <img id="pause-btn" class="control-button" src="assets/icons/pause.png" alt="Pause">
+
+      <!-- Music volume -->
+      <label style="font-size: 14px;">🎵 volume</label>
+      <input id="music-volume" class="slider" type="range" min="0" max="1" step="0.01" value="0.5">
+
+      <!-- Video speed -->
+      <label style="font-size: 14px;"> intro speed</label>
+      <input id="speed-slider" class="slider" type="range" min="0.25" max="2" step="0.25" value="1">
+    </div>
+
+    <!-- Dive In button -->
+    <img id="dive-btn" src="assets/icons/dive.png" alt="Dive In">
   </div>
-
   <script>
-    document.getElementById("start-btn").addEventListener("click", () => {
-      window.location.href = "main page.html";
+    
+    // Elements
+    const playBtn = document.getElementById('play-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    const introVideo = document.getElementById('intro-video');
+    const coverImage = document.getElementById('cover-image');
+    const diveBtn = document.getElementById('dive-btn');
+    const bgMusic = document.getElementById('bg-music');
+    const musicVolume = document.getElementById('music-volume');
+    const speedSlider = document.getElementById('speed-slider');
+
+    // Play/Pause
+    playBtn.addEventListener('click', () => {
+      coverImage.style.display = 'none';
+      introVideo.style.display = 'block';
+      introVideo.play();
+      bgMusic.play();
     });
+    pauseBtn.addEventListener('click', () => {
+      introVideo.pause();
+      bgMusic.pause();
+    });
+
+    // Volume & Speed
+    musicVolume.addEventListener('input', () => bgMusic.volume = musicVolume.value);
+    speedSlider.addEventListener('input', () => introVideo.playbackRate = speedSlider.value);
+
+    // Show dive button after video ends
+    introVideo.addEventListener('ended', () => diveBtn.style.display = 'block');
+
+    // Go to game
+    diveBtn.addEventListener('click', () => window.location.href = "game.html");
   </script>
 </body>
 </html>
