@@ -240,12 +240,8 @@ function drawLevel() {
     return;
   }
 
-  // Keep aspect ratio instead of stretching
-let bgW = 1920 * scaleFactor;
-let bgH = 1080 * scaleFactor;
-let xOffset = (width - bgW) / 2;
-let yOffset = (height - bgH) / 2;
-image(level.bg, xOffset, yOffset, bgW, bgH);
+image(level.bg, 0, 0, width, height);  // fills full screen
+
 
 
   // Draw objects
@@ -290,8 +286,8 @@ function mousePressed() {
     if (obj.found) continue;
 
     // Position based on full canvas
-    let objX = (obj.xPercent / 100) * (1920 * scaleFactor + xOffset);
-    let objY = (obj.yPercent / 100) * (1920 * scaleFactor + yOffset);
+    let objX = (obj.xPercent / 100) * width;
+    let objY = (obj.yPercent / 100) * height;
     let objW = obj.img.width * 0.3 * scaleFactor;
     let objH = obj.img.height * 0.3 * scaleFactor;
 
