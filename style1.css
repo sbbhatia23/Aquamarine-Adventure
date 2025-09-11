@@ -10,10 +10,15 @@ body {
 }
 
 canvas {
-  display: block;
-  max-width: 100vw;
-  max-height: 100vh;
+  display: block;       /* removes inline gap */
+  position: absolute;   /* makes it anchor to the screen */
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0;
 }
+
 
 #counter {
   position: absolute;
