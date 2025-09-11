@@ -43,7 +43,7 @@ body {
 .controls {
   position: absolute;
   bottom: 30px;
-  left: 23%;
+  left: 30%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
