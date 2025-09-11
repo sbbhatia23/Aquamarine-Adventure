@@ -9,36 +9,27 @@
 </head>
 <body>
   <div class="video-container">
-    <!-- Cover image -->
     <img id="cover-image" src="assets/firstlevel.png" alt="Cover">
 
-    <!-- Video -->
     <video id="intro-video" src="assets/cover.mp4"></video>
 
-    <!-- Music -->
     <audio id="bg-music" src="assets/bg.mp3" loop></audio>
 
-    <!-- Controls -->
     <div class="controls">
-      <!-- Play / Pause -->
       <img id="play-btn" class="control-button" src="assets/play.png" alt="Play">
       <img id="pause-btn" class="control-button" src="assets/pause.png" alt="Pause">
 
-      <!-- Music volume -->
-      <label style="font-size: 14px;">🎵 volume</label>
+      <label style="font-size: 14px;">🎵 </label>
       <input id="music-volume" class="slider" type="range" min="0" max="1" step="0.01" value="0.5">
 
-      <!-- Video speed -->
       <label style="font-size: 14px;"> intro speed</label>
       <input id="speed-slider" class="slider" type="range" min="0.25" max="2" step="0.25" value="1">
     </div>
 
-    <!-- Dive In button -->
     <img id="dive-btn" src="assets/dive.png" alt="Dive In">
   </div>
 
   <script>
-    // Elements
     const playBtn = document.getElementById('play-btn');
     const pauseBtn = document.getElementById('pause-btn');
     const introVideo = document.getElementById('intro-video');
@@ -48,7 +39,6 @@
     const musicVolume = document.getElementById('music-volume');
     const speedSlider = document.getElementById('speed-slider');
 
-    // Play button logic
     playBtn.addEventListener('click', () => {
       coverImage.style.display = 'none';
       introVideo.style.display = 'block';
@@ -56,28 +46,23 @@
       bgMusic.play();
     });
 
-    // Pause button logic
     pauseBtn.addEventListener('click', () => {
       introVideo.pause();
       bgMusic.pause();
     });
 
-    // Music volume
     musicVolume.addEventListener('input', () => {
       bgMusic.volume = musicVolume.value;
     });
 
-    // Video speed
     speedSlider.addEventListener('input', () => {
       introVideo.playbackRate = speedSlider.value;
     });
 
-    // When video ends, show Dive In button
     introVideo.addEventListener('ended', () => {
       diveBtn.style.display = 'block';
     });
 
-    // Dive button goes to main page
     diveBtn.addEventListener('click', () => {
       window.location.href = "level1.html";
     });
