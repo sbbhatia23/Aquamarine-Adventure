@@ -26,28 +26,17 @@ body {
   align-items: center;
 }
 
-/* Intro video */
-#intro-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;  /* ✅ fills full screen */
-  display: none;
-  z-index: 0;
-}
-
-/* Cover image */
+#intro-video,
 #cover-image {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;  /* ✅ fills full screen */
+  object-fit: cover;   /* ✅ fills screen fully */
   z-index: 0;
 }
+
 
 
 /* Controls wrapper */
