@@ -2,16 +2,14 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: black;
-  display: flex;
+  background-color: white;
   justify-content: center;
   align-items: center;
-  touch-action: none; /* Prevents scrolling while tapping on mobile */
-}
+  touch-action: none; }
 
 canvas {
-  display: block;       /* removes inline gap */
-  position: absolute;   /* makes it anchor to the screen */
+  display: block;       
+  position: absolute;   
   top: 0;
   left: 0;
   width: 100% !important;
