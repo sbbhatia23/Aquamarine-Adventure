@@ -24,7 +24,7 @@ let dialogueIndex = 0;
 let lastCharTime = 0;
 let charSpeed = 40;
 let whiskerImg;
-let pauseImg, playImg, pauseBtn, playBtn;
+let pauseBtn, playBtn;
 
 let levelMessages = [
   "Hi! I am Whisker - a very trustworthy sailor... Can you help me collect some bait for our long journey down below?",
@@ -35,11 +35,9 @@ let levelMessages = [
 ];
 
 function preload() {
-  pauseImg = loadImage("assets/pause.png");
-  playImg = loadImage("assets/play.png");
   whiskerImg = loadImage("assets/whiskers.png");
-endingImg = loadImage("assets/end.png");
-  // Levels setup
+  endingImg = loadImage("assets/end.png");
+
   levels[1] = {
     bg: loadImage("assets/firstlevel.png"),
     icons: [loadImage("assets/worm1.png"), loadImage("assets/worm2.png")],
@@ -71,38 +69,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   scaleFactor = min(width / 1920, height / 1080);
 
-  // Pause/Play buttons
-  pauseBtn = createImg("assets/pause.png");
-  pauseBtn.position(20 * scaleFactor, height - 60 * scaleFactor);
-  pauseBtn.size(50 * scaleFactor, 50 * scaleFactor);
-  pauseBtn.mousePressed(pauseDialogue);
-
-  playBtn = createImg("assets/play.png");
-  playBtn.position(80 * scaleFactor, height - 60 * scaleFactor);
-  playBtn.size(50 * scaleFactor, 50 * scaleFactor);
-  playBtn.mousePressed(finishDialogue);
-  playBtn.hide();
-
   triggerDialogue(); // Start intro
-
-  const bgMusic = document.getElementById("bgMusic");
-const volumeSlider = document.getElementById("volumeSlider");
-
-bgMusic.volume = parseFloat(volumeSlider.value);
-
-// Play on first click/touch
-function startMusic() {
-  if (bgMusic.paused) bgMusic.play();
-  window.removeEventListener('click', startMusic);
-  window.removeEventListener('touchstart', startMusic);
-}
-window.addEventListener('click', startMusic);
-window.addEventListener('touchstart', startMusic);
-
-// Update volume in real time
-volumeSlider.addEventListener("input", () => {
-  bgMusic.volume = parseFloat(volumeSlider.value);
-});
 }
 
 function draw() {
@@ -117,12 +84,6 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   scaleFactor = min(width / 1920, height / 1080);
 
-  pauseBtn.position(20 * scaleFactor, height - 60 * scaleFactor);
-  pauseBtn.size(50 * scaleFactor, 50 * scaleFactor);
-
-  playBtn.position(80 * scaleFactor, height - 60 * scaleFactor);
-  playBtn.size(50 * scaleFactor, 50 * scaleFactor);
-
   if (!showingDialogue) placeObjects();
 }
 
@@ -132,25 +93,19 @@ function triggerDialogue() {
   dialogueText = "";
   dialogueIndex = 0;
   lastCharTime = millis();
-  pauseBtn.show();
-  playBtn.show();
 }
 
 function drawDialogue() {
-  // Transparent overlay
   fill(255, 150);
   rect(0, 0, width, height);
 
-  // Whisker portrait
   image(whiskerImg, 60 * scaleFactor, height - 260 * scaleFactor, 180 * scaleFactor, 180 * scaleFactor);
 
-  // Speech bubble
   fill(255);
   stroke(0);
   strokeWeight(2);
   rect(280 * scaleFactor, height - 220 * scaleFactor, (width - 340) * scaleFactor, 160 * scaleFactor, 20 * scaleFactor);
 
-  // Typewriter text
   let fullMsg = levelMessages[currentLevel - 1];
   if (dialogueIndex < fullMsg.length && millis() - lastCharTime > charSpeed) {
     dialogueText += fullMsg.charAt(dialogueIndex);
@@ -165,23 +120,13 @@ function drawDialogue() {
   text(dialogueText, 300 * scaleFactor, height - 200 * scaleFactor, (width - 380) * scaleFactor, 140 * scaleFactor);
 }
 
-function pauseDialogue() {
-  noLoop();
-}
-
 function finishDialogue() {
-  loop();
-  playBtn.hide();
-  let fullMsg = levelMessages[currentLevel - 1];
-  dialogueText = fullMsg;
-  dialogueIndex = fullMsg.length;
-
   showingDialogue = false;
   objectsFound = 0;
   placeObjects();
 }
 
-
+// -------------------- Objects --------------------
 function placeObjects() {
   let level = levels[currentLevel];
   objects = [];
@@ -195,43 +140,37 @@ function placeObjects() {
       attempts++;
       let img = random(level.icons);
 
-      // Random positions based on full canvas now
-      let xPercent = random(5, 95);  // percentage of canvas width
-      let yPercent = random(5, 95);  // percentage of canvas height
-
       let objW = img.width * 0.3 * scaleFactor;
       let objH = img.height * 0.3 * scaleFactor;
 
+      // Random position in pixels
+      let objX = random(0 + objW, width - objW);
+      let objY = random(0 + objH, height - objH);
+
+      // Check overlap
       let overlap = false;
       for (let other of objects) {
-        let dx = ((xPercent - other.xPercent) / 100) * width;
-        let dy = ((yPercent - other.yPercent) / 100) * height;
-        let distance = dist(0, 0, dx, dy);
-        let minDist = max(objW, objH) * 0.6;
-        if (distance < minDist) {
+        let distance = dist(objX, objY, other.x, other.y);
+        if (distance < max(objW, objH) * 0.6) {
           overlap = true;
           break;
         }
       }
 
       if (!overlap) {
-        objects.push({ img, xPercent, yPercent, found: false });
+        objects.push({ img, x: objX, y: objY, w: objW, h: objH, found: false });
         placed = true;
       }
     }
   }
 }
 
-
 function drawLevel() {
   let level = levels[currentLevel];
-
-  // If no more levels, show ending image
   if (!level) {
-    background(255); // white background
-    if (endingImg) {
-      image(endingImg, 0, 0, width, height);
-    } else {
+    background(255);
+    if (endingImg) image(endingImg, 0, 0, width, height);
+    else {
       fill(0);
       textSize(36 * scaleFactor);
       textAlign(CENTER, CENTER);
@@ -240,33 +179,22 @@ function drawLevel() {
     return;
   }
 
-image(level.bg, 0, 0, width, height);  // fills full screen
+  image(level.bg, 0, 0, width, height); // full screen background
 
-
-
-  // Draw objects
   for (let obj of objects) {
     if (obj.found) continue;
 
-   let objX = (obj.xPercent / 100) * 1920 * scaleFactor + xOffset;
-   let objY = (obj.yPercent / 100) * 1080 * scaleFactor + yOffset;
-   let objW = obj.img.width * 0.3 * scaleFactor;
-   let objH = obj.img.height * 0.3 * scaleFactor;
-
-
-    // Highlight object on hover
-    if (mouseX > objX && mouseX < objX + objW &&
-        mouseY > objY && mouseY < objY + objH) {
+    if (mouseX > obj.x && mouseX < obj.x + obj.w &&
+        mouseY > obj.y && mouseY < obj.y + obj.h) {
       push();
       tint(255, 220);
-      image(obj.img, objX - 3, objY - 3, objW + 6, objH + 6);
+      image(obj.img, obj.x - 3, obj.y - 3, obj.w + 6, obj.h + 6);
       pop();
     } else {
-      image(obj.img, objX, objY, objW, objH);
+      image(obj.img, obj.x, obj.y, obj.w, obj.h);
     }
   }
 
-  // Display counter
   fill(255);
   stroke(0);
   strokeWeight(2);
@@ -275,33 +203,22 @@ image(level.bg, 0, 0, width, height);  // fills full screen
   text(`Objects Found: ${objectsFound} / ${level.objectCount}`, 20 * scaleFactor, 20 * scaleFactor);
 }
 
-
 function mousePressed() {
   if (showingDialogue) return;
-
-  let level = levels[currentLevel];
-  if (!level) return;
 
   for (let obj of objects) {
     if (obj.found) continue;
 
-    // Position based on full canvas
-    let objX = (obj.xPercent / 100) * width;
-    let objY = (obj.yPercent / 100) * height;
-    let objW = obj.img.width * 0.3 * scaleFactor;
-    let objH = obj.img.height * 0.3 * scaleFactor;
-
-    if (mouseX > objX && mouseX < objX + objW &&
-        mouseY > objY && mouseY < objY + objH) {
+    if (mouseX > obj.x && mouseX < obj.x + obj.w &&
+        mouseY > obj.y && mouseY < obj.y + obj.h) {
       obj.found = true;
       objectsFound++;
 
-      if (objectsFound >= level.objectCount) {
+      if (objectsFound >= levels[currentLevel].objectCount) {
         currentLevel++;
-        if (currentLevel <= 5) {
-          triggerDialogue();
-        }
+        if (currentLevel <= 5) triggerDialogue();
       }
     }
   }
 }
+
