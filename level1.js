@@ -73,8 +73,23 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   updateScale();
+  
+  const bgMusic = document.getElementById("bgMusic");
+  const volumeSlider = document.getElementById("volumeSlider");
+  bgMusic.volume = parseFloat(volumeSlider.value);
+  function startMusic() {
+    if (bgMusic.paused) {
+    bgMusic.play();
+    }
+  window.removeEventListener('click', startMusic);
+  window.removeEventListener('touchstart', startMusic);
+  }
+  window.addEventListener('click', startMusic);
+  window.addEventListener('touchstart', startMusic);
+  volumeSlider.addEventListener("input", () => {
+    bgMusic.volume = parseFloat(volumeSlider.value);
+    });
 
-  // Pause/Play buttons
   pauseBtn = createImg("assets/pause.png");
   pauseBtn.mousePressed(pauseDialogue);
 
@@ -82,26 +97,9 @@ function setup() {
   playBtn.mousePressed(finishDialogue);
   playBtn.hide();
 
-  positionButtons(); // position buttons according to scale
+  positionButtons(); 
 
-  triggerDialogue(); // Start intro
-
-  // Music
-  const bgMusic = document.getElementById("bgMusic");
-  const volumeSlider = document.getElementById("volumeSlider");
-  bgMusic.volume = parseFloat(volumeSlider.value);
-
-  function startMusic() {
-    if (bgMusic.paused) bgMusic.play();
-    window.removeEventListener('click', startMusic);
-    window.removeEventListener('touchstart', startMusic);
-  }
-  window.addEventListener('click', startMusic);
-  window.addEventListener('touchstart', startMusic);
-
-  volumeSlider.addEventListener("input", () => {
-    bgMusic.volume = parseFloat(volumeSlider.value);
-  });
+  triggerDialogue(); 
 }
 
 // -------------------- Draw --------------------
@@ -113,7 +111,7 @@ function draw() {
   }
 }
 
-// -------------------- Window Resize --------------------
+// window scaling
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   updateScale();
@@ -135,7 +133,7 @@ function positionButtons() {
   playBtn.size(50 * scaleFactor, 50 * scaleFactor);
 }
 
-// -------------------- Dialogue --------------------
+// -------------------- text --------------------
 function triggerDialogue() {
   showingDialogue = true;
   dialogueText = "";
@@ -177,6 +175,7 @@ function pauseDialogue() {
 function finishDialogue() {
   loop();
   playBtn.hide();
+  pauseBtn.hide();
   let fullMsg = levelMessages[currentLevel - 1];
   dialogueText = fullMsg;
   dialogueIndex = fullMsg.length;
@@ -185,7 +184,7 @@ function finishDialogue() {
   placeObjects();
 }
 
-// -------------------- Place Objects --------------------
+// -------------------- Objects --------------------
 function placeObjects() {
   let level = levels[currentLevel];
   objects = [];
@@ -202,8 +201,8 @@ function placeObjects() {
       let xPercent = random(5, 95);
       let yPercent = random(5, 95);
 
-      let objW = img.width * 0.3 * scaleFactor;
-      let objH = img.height * 0.3 * scaleFactor;
+      let objW = img.width * 0.5 * scaleFactor;
+      let objH = img.height * 0.5 * scaleFactor;
 
       let overlap = false;
       for (let other of objects) {
@@ -225,7 +224,7 @@ function placeObjects() {
   }
 }
 
-// -------------------- Draw Level --------------------
+// -------------------- Draw Levels --------------------
 function drawLevel() {
   let level = levels[currentLevel];
 
