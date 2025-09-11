@@ -1,29 +1,116 @@
-body {
+/* Reset */
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
   font-family: 'Poppins', sans-serif;
-  background-color: #001f3f; /* Deep ocean color */
-  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-}
-
-.container {
-  text-align: center;
-}
-
-button {
-  background-color: #00bfff;
+  overflow: hidden;
   color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 18px;
-  transition: 0.2s;
+  background-color: black;
 }
 
-button:hover {
-  background-color: #0099cc;
+/* Video container */
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+/* Intro video */
+#intro-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+  z-index: 0;
+}
+
+/* Cover image */
+#cover-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Controls wrapper */
+.controls {
+  position: absolute;
+  bottom: 30px;
+  left: 23%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px 15px;
+  border-radius: 10px;
+  z-index: 2;
+  backdrop-filter: blur(6px);
+}
+
+/* Control buttons */
+.control-button {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.control-button:hover {
+  transform: scale(1.1);
+}
+
+/* Sliders */
+.slider {
+  width: 120px;
+  cursor: pointer;
+  appearance: none;
+  height: 6px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: cyan;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Dive In button */
+#dive-btn {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  display: none;
+  cursor: pointer;
+  z-index: 3;
+  transition: transform 0.2s;
+}
+
+#dive-btn:hover {
+  transform: translateX(-50%) scale(1.1);
+}
+
