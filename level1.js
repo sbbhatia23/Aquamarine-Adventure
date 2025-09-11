@@ -5,11 +5,12 @@
  *
  * AI Usage Statement:
  * This project includes AI-assisted elements. I used ChatGPT
- * to figure out how to scale and keep the sketch interactive.
+ * to create objects such as the submarine and fish and to give insight on how to make bubbles and fish move.
  * The AI-generated content was reviewed, edited, and integrated by me.
- * Link to AI transcript: https://chatgpt.com/share/68c312ae-df84-8007-9b96-34ce723bf5c7
- https://chatgpt.com/share/68c3139b-dbe0-8007-93f4-1dbaa7796f32
+ * Link to AI transcript: https://chatgpt.com/c/689ba778-e794-832c-8a1e-a3373cf902d3
  */
+// Cozy Stardew Valley–inspired Submarine Scene with Exploration
+
 let currentLevel = 1;
 let levels = {};
 let objects = [];
@@ -38,8 +39,7 @@ function preload() {
   pauseImg = loadImage("assets/pause.png");
   playImg = loadImage("assets/play.png");
   whiskerImg = loadImage("assets/whiskers.png");
-  endingImg = loadImage("assets/end.png");
-
+endingImg = loadImage("assets/end.png");
   // Levels setup
   levels[1] = {
     bg: loadImage("assets/firstlevel.png"),
@@ -70,37 +70,40 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  calculateScale();
+  scaleFactor = min(width / 1920, height / 1080);
 
   // Pause/Play buttons
   pauseBtn = createImg("assets/pause.png");
+  pauseBtn.position(20 * scaleFactor, height - 60 * scaleFactor);
+  pauseBtn.size(50 * scaleFactor, 50 * scaleFactor);
   pauseBtn.mousePressed(pauseDialogue);
 
   playBtn = createImg("assets/play.png");
+  playBtn.position(80 * scaleFactor, height - 60 * scaleFactor);
+  playBtn.size(50 * scaleFactor, 50 * scaleFactor);
   playBtn.mousePressed(finishDialogue);
   playBtn.hide();
-
-  positionButtons();
 
   triggerDialogue(); // Start intro
 
   const bgMusic = document.getElementById("bgMusic");
-  const volumeSlider = document.getElementById("volumeSlider");
+const volumeSlider = document.getElementById("volumeSlider");
+
+bgMusic.volume = parseFloat(volumeSlider.value);
+
+// Play on first click/touch
+function startMusic() {
+  if (bgMusic.paused) bgMusic.play();
+  window.removeEventListener('click', startMusic);
+  window.removeEventListener('touchstart', startMusic);
+}
+window.addEventListener('click', startMusic);
+window.addEventListener('touchstart', startMusic);
+
+// Update volume in real time
+volumeSlider.addEventListener("input", () => {
   bgMusic.volume = parseFloat(volumeSlider.value);
-
-  // Play on first click/touch
-  function startMusic() {
-    if (bgMusic.paused) bgMusic.play();
-    window.removeEventListener('click', startMusic);
-    window.removeEventListener('touchstart', startMusic);
-  }
-  window.addEventListener('click', startMusic);
-  window.addEventListener('touchstart', startMusic);
-
-  // Update volume in real time
-  volumeSlider.addEventListener("input", () => {
-    bgMusic.volume = parseFloat(volumeSlider.value);
-  });
+});
 }
 
 function draw() {
@@ -113,8 +116,14 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  calculateScale();
-  positionButtons();
+  scaleFactor = min(width / 1920, height / 1080);
+
+  pauseBtn.position(20 * scaleFactor, height - 60 * scaleFactor);
+  pauseBtn.size(50 * scaleFactor, 50 * scaleFactor);
+
+  playBtn.position(80 * scaleFactor, height - 60 * scaleFactor);
+  playBtn.size(50 * scaleFactor, 50 * scaleFactor);
+
   if (!showingDialogue) placeObjects();
 }
 
@@ -173,7 +182,7 @@ function finishDialogue() {
   placeObjects();
 }
 
-// -------------------- Objects --------------------
+
 function placeObjects() {
   let level = levels[currentLevel];
   objects = [];
@@ -187,9 +196,9 @@ function placeObjects() {
       attempts++;
       let img = random(level.icons);
 
-      // Random positions relative to canvas
-      let xPercent = random(5, 95);
-      let yPercent = random(5, 95);
+      // Random positions based on full canvas now
+      let xPercent = random(5, 95);  // percentage of canvas width
+      let yPercent = random(5, 95);  // percentage of canvas height
 
       let objW = img.width * 0.3 * scaleFactor;
       let objH = img.height * 0.3 * scaleFactor;
@@ -214,12 +223,13 @@ function placeObjects() {
   }
 }
 
-// -------------------- Draw Level --------------------
+
 function drawLevel() {
   let level = levels[currentLevel];
 
+  // If no more levels, show ending image
   if (!level) {
-    background(255);
+    background(255); // white background
     if (endingImg) {
       image(endingImg, 0, 0, width, height);
     } else {
@@ -231,7 +241,7 @@ function drawLevel() {
     return;
   }
 
-  // Draw background full screen
+  // Draw background stretched to fill canvas
   image(level.bg, 0, 0, width, height);
 
   // Draw objects
@@ -243,6 +253,7 @@ function drawLevel() {
     let objW = obj.img.width * 0.3 * scaleFactor;
     let objH = obj.img.height * 0.3 * scaleFactor;
 
+    // Highlight object on hover
     if (mouseX > objX && mouseX < objX + objW &&
         mouseY > objY && mouseY < objY + objH) {
       push();
@@ -263,7 +274,7 @@ function drawLevel() {
   text(`Objects Found: ${objectsFound} / ${level.objectCount}`, 20 * scaleFactor, 20 * scaleFactor);
 }
 
-// -------------------- Mouse --------------------
+
 function mousePressed() {
   if (showingDialogue) return;
 
@@ -273,6 +284,7 @@ function mousePressed() {
   for (let obj of objects) {
     if (obj.found) continue;
 
+    // Position based on full canvas
     let objX = (obj.xPercent / 100) * width;
     let objY = (obj.yPercent / 100) * height;
     let objW = obj.img.width * 0.3 * scaleFactor;
@@ -291,21 +303,6 @@ function mousePressed() {
       }
     }
   }
-}
-
-// -------------------- Helpers --------------------
-function calculateScale() {
-  scaleFactor = min(width / 1920, height / 1080);
-}
-
-function positionButtons() {
-  let btnScale = scaleFactor;
-  if (btnScale > 1) btnScale = 1; // don’t grow too big
-  pauseBtn.size(50 * btnScale, 50 * btnScale);
-  playBtn.size(50 * btnScale, 50 * btnScale);
-
-  pauseBtn.position(20, height - 60 * btnScale);
-  playBtn.position(80, height - 60 * btnScale);
 }
 
       }
