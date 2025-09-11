@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aquamarine Adventure</title>
   <link rel="stylesheet" href="style.css">
-   
+  
 </head>
 <body>
   <div class="video-container">
@@ -36,8 +36,8 @@
     <!-- Dive In button -->
     <img id="dive-btn" src="assets/icons/dive.png" alt="Dive In">
   </div>
+
   <script>
-    
     // Elements
     const playBtn = document.getElementById('play-btn');
     const pauseBtn = document.getElementById('pause-btn');
@@ -48,27 +48,39 @@
     const musicVolume = document.getElementById('music-volume');
     const speedSlider = document.getElementById('speed-slider');
 
-    // Play/Pause
+    // Play button logic
     playBtn.addEventListener('click', () => {
       coverImage.style.display = 'none';
       introVideo.style.display = 'block';
       introVideo.play();
       bgMusic.play();
     });
+
+    // Pause button logic
     pauseBtn.addEventListener('click', () => {
       introVideo.pause();
       bgMusic.pause();
     });
 
-    // Volume & Speed
-    musicVolume.addEventListener('input', () => bgMusic.volume = musicVolume.value);
-    speedSlider.addEventListener('input', () => introVideo.playbackRate = speedSlider.value);
+    // Music volume
+    musicVolume.addEventListener('input', () => {
+      bgMusic.volume = musicVolume.value;
+    });
 
-    // Show dive button after video ends
-    introVideo.addEventListener('ended', () => diveBtn.style.display = 'block');
+    // Video speed
+    speedSlider.addEventListener('input', () => {
+      introVideo.playbackRate = speedSlider.value;
+    });
 
-    // Go to game
-    diveBtn.addEventListener('click', () => window.location.href = "levelone/indexone.html");
+    // When video ends, show Dive In button
+    introVideo.addEventListener('ended', () => {
+      diveBtn.style.display = 'block';
+    });
+
+    // Dive button goes to main page
+    diveBtn.addEventListener('click', () => {
+      window.location.href = "level1.html";
+    });
   </script>
 </body>
 </html>
