@@ -285,8 +285,8 @@ function mousePressed() {
     // Position based on full canvas
     let objX = (obj.xPercent / 100) * width;
     let objY = (obj.yPercent / 100) * height;
-    let objW = obj.img.width * 0.3 * scaleFactor;
-    let objH = obj.img.height * 0.3 * scaleFactor;
+    let objW = obj.img.width * 0.6 * scaleFactor;
+    let objH = obj.img.height * 0.6 * scaleFactor;
 
     if (mouseX > objX && mouseX < objX + objW &&
         mouseY > objY && mouseY < objY + objH) {
