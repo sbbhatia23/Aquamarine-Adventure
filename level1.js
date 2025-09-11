@@ -5,12 +5,10 @@
  *
  * AI Usage Statement:
  * This project includes AI-assisted elements. I used ChatGPT
- * to create objects such as the submarine and fish and to give insight on how to make bubbles and fish move.
+ * to figure out how to scale and keep the sketch interactive.
  * The AI-generated content was reviewed, edited, and integrated by me.
- * Link to AI transcript: https://chatgpt.com/c/689ba778-e794-832c-8a1e-a3373cf902d3
+ * Link to AI transcript: https://chatgpt.com/share/68c312ae-df84-8007-9b96-34ce723bf5c7
  */
-// Cozy Stardew Valley–inspired Submarine Scene with Exploration
-
 let currentLevel = 1;
 let levels = {};
 let objects = [];
