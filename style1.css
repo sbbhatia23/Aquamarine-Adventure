@@ -30,3 +30,11 @@ canvas {
   border-radius: 8px;
   user-select: none;
 }
+
+#volume-slider {
+  position: absolute;
+  bottom: 20px;   
+  right: 20px;   
+  z-index: 9999;  
+  width: 200px; 
+}
