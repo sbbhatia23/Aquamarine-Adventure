@@ -8,6 +8,7 @@
  * to figure out how to scale and keep the sketch interactive.
  * The AI-generated content was reviewed, edited, and integrated by me.
  * Link to AI transcript: https://chatgpt.com/share/68c312ae-df84-8007-9b96-34ce723bf5c7
+ https://chatgpt.com/share/68c3139b-dbe0-8007-93f4-1dbaa7796f32
  */
 let currentLevel = 1;
 let levels = {};
