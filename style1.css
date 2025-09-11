@@ -28,3 +28,9 @@ canvas {
   user-select: none;
 }
 
+@media (max-width: 700px) {
+  .controls {
+    flex-direction: column;
+    gap: 2vh;
+  }
+}
