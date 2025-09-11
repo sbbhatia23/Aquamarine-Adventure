@@ -198,8 +198,8 @@ function placeObjects() {
       let xPercent = random(5, 95);  // percentage of canvas width
       let yPercent = random(5, 95);  // percentage of canvas height
 
-      let objW = img.width * 0.6 * scaleFactor;
-      let objH = img.height * 0.6 * scaleFactor;
+      let objW = img.width * 1 * scaleFactor;
+      let objH = img.height * 1 * scaleFactor;
 
       let overlap = false;
       for (let other of objects) {
@@ -248,8 +248,8 @@ function drawLevel() {
 
     let objX = (obj.xPercent / 100) * width;
     let objY = (obj.yPercent / 100) * height;
-    let objW = obj.img.width * 0.3 * scaleFactor;
-    let objH = obj.img.height * 0.3 * scaleFactor;
+    let objW = obj.img.width * 0.6 * scaleFactor;
+    let objH = obj.img.height * 0.6 * scaleFactor;
 
     // Highlight object on hover
     if (mouseX > objX && mouseX < objX + objW &&
