@@ -5,12 +5,11 @@
  *
  * AI Usage Statement:
  * This project includes AI-assisted elements. I used ChatGPT
- * to create objects such as the submarine and fish and to give insight on how to make bubbles and fish move.
- * The AI-generated content was reviewed, edited, and integrated by me.
- * Link to AI transcript: https://chatgpt.com/c/689ba778-e794-832c-8a1e-a3373cf902d3
+ * to help me rework a sketch to add more images/interactive. I also used it to help me scaling issues
+ * Link to AI transcript: https://chatgpt.com/share/68c3139b-dbe0-8007-93f4-1dbaa7796f32
  */
-// Cozy Stardew Valley–inspired Submarine Scene with Exploration
 
+// -------------------- Variables --------------------
 let currentLevel = 1;
 let levels = {};
 let objects = [];
@@ -35,11 +34,13 @@ let levelMessages = [
   "We made it! Capy says to gather some seaweed for our feast - lets search around!"
 ];
 
+// -------------------- Preload --------------------
 function preload() {
   pauseImg = loadImage("assets/pause.png");
   playImg = loadImage("assets/play.png");
   whiskerImg = loadImage("assets/whiskers.png");
-endingImg = loadImage("assets/end.png");
+  endingImg = loadImage("assets/end.png");
+
   // Levels setup
   levels[1] = {
     bg: loadImage("assets/firstlevel.png"),
@@ -68,44 +69,42 @@ endingImg = loadImage("assets/end.png");
   };
 }
 
+// -------------------- Setup --------------------
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  scaleFactor = min(width / 1920, height / 1080);
+  updateScale();
 
   // Pause/Play buttons
   pauseBtn = createImg("assets/pause.png");
-  pauseBtn.position(20 * scaleFactor, height - 60 * scaleFactor);
-  pauseBtn.size(50 * scaleFactor, 50 * scaleFactor);
   pauseBtn.mousePressed(pauseDialogue);
 
   playBtn = createImg("assets/play.png");
-  playBtn.position(80 * scaleFactor, height - 60 * scaleFactor);
-  playBtn.size(50 * scaleFactor, 50 * scaleFactor);
   playBtn.mousePressed(finishDialogue);
   playBtn.hide();
 
+  positionButtons(); // position buttons according to scale
+
   triggerDialogue(); // Start intro
 
+  // Music
   const bgMusic = document.getElementById("bgMusic");
-const volumeSlider = document.getElementById("volumeSlider");
-
-bgMusic.volume = parseFloat(volumeSlider.value);
-
-// Play on first click/touch
-function startMusic() {
-  if (bgMusic.paused) bgMusic.play();
-  window.removeEventListener('click', startMusic);
-  window.removeEventListener('touchstart', startMusic);
-}
-window.addEventListener('click', startMusic);
-window.addEventListener('touchstart', startMusic);
-
-// Update volume in real time
-volumeSlider.addEventListener("input", () => {
+  const volumeSlider = document.getElementById("volumeSlider");
   bgMusic.volume = parseFloat(volumeSlider.value);
-});
+
+  function startMusic() {
+    if (bgMusic.paused) bgMusic.play();
+    window.removeEventListener('click', startMusic);
+    window.removeEventListener('touchstart', startMusic);
+  }
+  window.addEventListener('click', startMusic);
+  window.addEventListener('touchstart', startMusic);
+
+  volumeSlider.addEventListener("input", () => {
+    bgMusic.volume = parseFloat(volumeSlider.value);
+  });
 }
 
+// -------------------- Draw --------------------
 function draw() {
   if (showingDialogue) {
     drawDialogue();
@@ -114,17 +113,26 @@ function draw() {
   }
 }
 
+// -------------------- Window Resize --------------------
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  scaleFactor = min(width / 1920, height / 1080);
+  updateScale();
+  positionButtons();
 
+  if (!showingDialogue) placeObjects();
+}
+
+// -------------------- Scaling Helpers --------------------
+function updateScale() {
+  scaleFactor = min(width / 1920, height / 1080);
+}
+
+function positionButtons() {
   pauseBtn.position(20 * scaleFactor, height - 60 * scaleFactor);
   pauseBtn.size(50 * scaleFactor, 50 * scaleFactor);
 
   playBtn.position(80 * scaleFactor, height - 60 * scaleFactor);
   playBtn.size(50 * scaleFactor, 50 * scaleFactor);
-
-  if (!showingDialogue) placeObjects();
 }
 
 // -------------------- Dialogue --------------------
@@ -138,20 +146,16 @@ function triggerDialogue() {
 }
 
 function drawDialogue() {
-  // Transparent overlay
   fill(255, 150);
   rect(0, 0, width, height);
 
-  // Whisker portrait
   image(whiskerImg, 60 * scaleFactor, height - 260 * scaleFactor, 180 * scaleFactor, 180 * scaleFactor);
 
-  // Speech bubble
   fill(255);
   stroke(0);
   strokeWeight(2);
   rect(280 * scaleFactor, height - 220 * scaleFactor, (width - 340) * scaleFactor, 160 * scaleFactor, 20 * scaleFactor);
 
-  // Typewriter text
   let fullMsg = levelMessages[currentLevel - 1];
   if (dialogueIndex < fullMsg.length && millis() - lastCharTime > charSpeed) {
     dialogueText += fullMsg.charAt(dialogueIndex);
@@ -176,13 +180,12 @@ function finishDialogue() {
   let fullMsg = levelMessages[currentLevel - 1];
   dialogueText = fullMsg;
   dialogueIndex = fullMsg.length;
-
   showingDialogue = false;
   objectsFound = 0;
   placeObjects();
 }
 
-
+// -------------------- Place Objects --------------------
 function placeObjects() {
   let level = levels[currentLevel];
   objects = [];
@@ -196,9 +199,8 @@ function placeObjects() {
       attempts++;
       let img = random(level.icons);
 
-      // Random positions based on full canvas now
-      let xPercent = random(5, 95);  // percentage of canvas width
-      let yPercent = random(5, 95);  // percentage of canvas height
+      let xPercent = random(5, 95);
+      let yPercent = random(5, 95);
 
       let objW = img.width * 0.3 * scaleFactor;
       let objH = img.height * 0.3 * scaleFactor;
@@ -223,16 +225,14 @@ function placeObjects() {
   }
 }
 
-
+// -------------------- Draw Level --------------------
 function drawLevel() {
   let level = levels[currentLevel];
 
-  // If no more levels, show ending image
   if (!level) {
-    background(255); // white background
-    if (endingImg) {
-      image(endingImg, 0, 0, width, height);
-    } else {
+    background(255);
+    if (endingImg) image(endingImg, 0, 0, width, height);
+    else {
       fill(0);
       textSize(36 * scaleFactor);
       textAlign(CENTER, CENTER);
@@ -241,10 +241,8 @@ function drawLevel() {
     return;
   }
 
-  // Draw background stretched to fill canvas
   image(level.bg, 0, 0, width, height);
 
-  // Draw objects
   for (let obj of objects) {
     if (obj.found) continue;
 
@@ -253,7 +251,6 @@ function drawLevel() {
     let objW = obj.img.width * 0.3 * scaleFactor;
     let objH = obj.img.height * 0.3 * scaleFactor;
 
-    // Highlight object on hover
     if (mouseX > objX && mouseX < objX + objW &&
         mouseY > objY && mouseY < objY + objH) {
       push();
@@ -265,7 +262,6 @@ function drawLevel() {
     }
   }
 
-  // Display counter
   fill(255);
   stroke(0);
   strokeWeight(2);
@@ -274,7 +270,7 @@ function drawLevel() {
   text(`Objects Found: ${objectsFound} / ${level.objectCount}`, 20 * scaleFactor, 20 * scaleFactor);
 }
 
-
+// -------------------- Mouse Interaction --------------------
 function mousePressed() {
   if (showingDialogue) return;
 
@@ -284,7 +280,6 @@ function mousePressed() {
   for (let obj of objects) {
     if (obj.found) continue;
 
-    // Position based on full canvas
     let objX = (obj.xPercent / 100) * width;
     let objY = (obj.yPercent / 100) * height;
     let objW = obj.img.width * 0.3 * scaleFactor;
@@ -297,14 +292,7 @@ function mousePressed() {
 
       if (objectsFound >= level.objectCount) {
         currentLevel++;
-        if (currentLevel <= 5) {
-          triggerDialogue();
-        }
-      }
-    }
-  }
-}
-
+        if (currentLevel <= 5) triggerDialogue();
       }
     }
   }
