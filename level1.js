@@ -40,6 +40,7 @@ function preload() {
   whiskerImg = loadImage("assets/whiskers.png");
   endingImg = loadImage("assets/end.png");
 
+  // Levels setup
   levels[1] = {
     bg: loadImage("assets/firstlevel.png"),
     icons: [loadImage("assets/worm1.png"), loadImage("assets/worm2.png")],
@@ -69,25 +70,22 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  scaleFactor = min(width / 1920, height / 1080);
+  calculateScale();
 
   // Pause/Play buttons
   pauseBtn = createImg("assets/pause.png");
-  pauseBtn.position(20 * scaleFactor, height - 60 * scaleFactor);
-  pauseBtn.size(50 * scaleFactor, 50 * scaleFactor);
   pauseBtn.mousePressed(pauseDialogue);
 
   playBtn = createImg("assets/play.png");
-  playBtn.position(80 * scaleFactor, height - 60 * scaleFactor);
-  playBtn.size(50 * scaleFactor, 50 * scaleFactor);
   playBtn.mousePressed(finishDialogue);
   playBtn.hide();
+
+  positionButtons();
 
   triggerDialogue(); // Start intro
 
   const bgMusic = document.getElementById("bgMusic");
   const volumeSlider = document.getElementById("volumeSlider");
-
   bgMusic.volume = parseFloat(volumeSlider.value);
 
   // Play on first click/touch
@@ -115,14 +113,8 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  scaleFactor = min(width / 1920, height / 1080);
-
-  pauseBtn.position(20 * scaleFactor, height - 60 * scaleFactor);
-  pauseBtn.size(50 * scaleFactor, 50 * scaleFactor);
-
-  playBtn.position(80 * scaleFactor, height - 60 * scaleFactor);
-  playBtn.size(50 * scaleFactor, 50 * scaleFactor);
-
+  calculateScale();
+  positionButtons();
   if (!showingDialogue) placeObjects();
 }
 
@@ -137,16 +129,20 @@ function triggerDialogue() {
 }
 
 function drawDialogue() {
+  // Transparent overlay
   fill(255, 150);
   rect(0, 0, width, height);
 
+  // Whisker portrait
   image(whiskerImg, 60 * scaleFactor, height - 260 * scaleFactor, 180 * scaleFactor, 180 * scaleFactor);
 
+  // Speech bubble
   fill(255);
   stroke(0);
   strokeWeight(2);
-  rect(280 * scaleFactor, height - 220 * scaleFactor, width - 340 * scaleFactor, 160 * scaleFactor, 20 * scaleFactor);
+  rect(280 * scaleFactor, height - 220 * scaleFactor, (width - 340) * scaleFactor, 160 * scaleFactor, 20 * scaleFactor);
 
+  // Typewriter text
   let fullMsg = levelMessages[currentLevel - 1];
   if (dialogueIndex < fullMsg.length && millis() - lastCharTime > charSpeed) {
     dialogueText += fullMsg.charAt(dialogueIndex);
@@ -158,7 +154,7 @@ function drawDialogue() {
   noStroke();
   textSize(18 * scaleFactor);
   textAlign(LEFT, TOP);
-  text(dialogueText, 300 * scaleFactor, height - 200 * scaleFactor, width - 380 * scaleFactor, 140 * scaleFactor);
+  text(dialogueText, 300 * scaleFactor, height - 200 * scaleFactor, (width - 380) * scaleFactor, 140 * scaleFactor);
 }
 
 function pauseDialogue() {
@@ -168,14 +164,16 @@ function pauseDialogue() {
 function finishDialogue() {
   loop();
   playBtn.hide();
-  dialogueText = levelMessages[currentLevel - 1];
-  dialogueIndex = dialogueText.length;
+  let fullMsg = levelMessages[currentLevel - 1];
+  dialogueText = fullMsg;
+  dialogueIndex = fullMsg.length;
 
   showingDialogue = false;
   objectsFound = 0;
   placeObjects();
 }
 
+// -------------------- Objects --------------------
 function placeObjects() {
   let level = levels[currentLevel];
   objects = [];
@@ -189,6 +187,7 @@ function placeObjects() {
       attempts++;
       let img = random(level.icons);
 
+      // Random positions relative to canvas
       let xPercent = random(5, 95);
       let yPercent = random(5, 95);
 
@@ -215,6 +214,7 @@ function placeObjects() {
   }
 }
 
+// -------------------- Draw Level --------------------
 function drawLevel() {
   let level = levels[currentLevel];
 
@@ -263,6 +263,7 @@ function drawLevel() {
   text(`Objects Found: ${objectsFound} / ${level.objectCount}`, 20 * scaleFactor, 20 * scaleFactor);
 }
 
+// -------------------- Mouse --------------------
 function mousePressed() {
   if (showingDialogue) return;
 
@@ -287,6 +288,26 @@ function mousePressed() {
         if (currentLevel <= 5) {
           triggerDialogue();
         }
+      }
+    }
+  }
+}
+
+// -------------------- Helpers --------------------
+function calculateScale() {
+  scaleFactor = min(width / 1920, height / 1080);
+}
+
+function positionButtons() {
+  let btnScale = scaleFactor;
+  if (btnScale > 1) btnScale = 1; // don’t grow too big
+  pauseBtn.size(50 * btnScale, 50 * btnScale);
+  playBtn.size(50 * btnScale, 50 * btnScale);
+
+  pauseBtn.position(20, height - 60 * btnScale);
+  playBtn.position(80, height - 60 * btnScale);
+}
+
       }
     }
   }
