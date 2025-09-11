@@ -2,21 +2,18 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: white;
+  background-color: black;
+  display: flex;
   justify-content: center;
   align-items: center;
-  touch-action: none; }
-
-canvas {
-  display: block;       
-  position: absolute;   
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 0;
+  touch-action: none; /* Prevents scrolling while tapping on mobile */
 }
 
+canvas {
+  display: block;
+  max-width: 100vw;
+  max-height: 100vh;
+}
 
 #counter {
   position: absolute;
@@ -31,10 +28,3 @@ canvas {
   user-select: none;
 }
 
-#volume-slider {
-  position: absolute;
-  bottom: 20px;   
-  right: 20px;   
-  z-index: 9999;  
-  width: 200px; 
-}
