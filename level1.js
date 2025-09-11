@@ -198,8 +198,8 @@ function placeObjects() {
       let xPercent = random(5, 95);  // percentage of canvas width
       let yPercent = random(5, 95);  // percentage of canvas height
 
-      let objW = img.width * 0.3 * scaleFactor;
-      let objH = img.height * 0.3 * scaleFactor;
+      let objW = img.width * 0.6 * scaleFactor;
+      let objH = img.height * 0.6 * scaleFactor;
 
       let overlap = false;
       for (let other of objects) {
