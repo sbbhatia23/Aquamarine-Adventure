@@ -73,12 +73,12 @@ function setup() {
   scaleFactor = min(width / 1920, height / 1080);
 
   // Pause/Play buttons
-  pauseBtn = createImg("assets/icons/pause.png");
+  pauseBtn = createImg("assets/pause.png");
   pauseBtn.position(20 * scaleFactor, height - 60 * scaleFactor);
   pauseBtn.size(50 * scaleFactor, 50 * scaleFactor);
   pauseBtn.mousePressed(pauseDialogue);
 
-  playBtn = createImg("assets/icons/play.png");
+  playBtn = createImg("assets/play.png");
   playBtn.position(80 * scaleFactor, height - 60 * scaleFactor);
   playBtn.size(50 * scaleFactor, 50 * scaleFactor);
   playBtn.mousePressed(finishDialogue);
