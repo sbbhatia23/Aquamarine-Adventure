@@ -36,19 +36,19 @@ let levelMessages = [
 ];
 
 function preload() {
-  pauseImg = loadImage("assets/icons/pause.png");
-  playImg = loadImage("assets/icons/play.png");
+  pauseImg = loadImage("assets/pause.png");
+  playImg = loadImage("assets/play.png");
   whiskerImg = loadImage("assets/whiskers.png");
-endingImg = loadImage("assets/end.jpg");
+endingImg = loadImage("assets/end.png");
   // Levels setup
   levels[1] = {
     bg: loadImage("assets/firstlevel.png"),
-    icons: [loadImage("assets/icons/worm1.png"), loadImage("assets/icons/worm2.png")],
+    icons: [loadImage("assets/worm1.png"), loadImage("assets/worm2.png")],
     objectCount: 8
   };
   levels[2] = {
     bg: loadImage("assets/secondlevel.png"),
-    icons: [loadImage("assets/icons/barnacle.png"), loadImage("assets/icons/barnacle2.png"), loadImage("assets/icons/barnacle3.png")],
+    icons: [loadImage("assets/barnacle.png"), loadImage("assets/barnacle2.png"), loadImage("assets/barnacle3.png")],
     objectCount: 10
   };
   levels[3] = {
